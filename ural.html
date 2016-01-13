@@ -1,0 +1,110 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>WebGL Imperia prototype</title>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="./imperia.css" />
+<link rel="stylesheet" type="text/css" href="./fonts/style.css" />
+
+<script id="shader-fs" type="x-shader/x-fragment">
+    precision mediump float;
+
+    varying vec4 vColor;
+    varying float vDist;
+    varying vec4 vCColor;
+
+    void main(void) {
+		const vec4 BLACK = vec4(0.0, 0.0, 0.0, 1.0);
+
+		float mixF = (vDist - 0.85) * 5.0;
+		mixF = clamp(mixF, 0.0, 0.5);
+
+		vec4 result = mix(vColor, BLACK, mixF);
+		result.a = 1.0;
+
+		gl_FragColor = result;
+    }
+</script>
+
+<script id="shader-vs" type="x-shader/x-vertex">
+    attribute vec4 aVertexPosition;
+    attribute vec4 aVertexColor;
+    attribute vec3 aOffset;
+    attribute float aScale;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+    uniform float fTiming;
+
+    varying vec4 vColor;
+    varying float vDist;
+
+    void main(void) {
+		//vec3 vPos = aVertexPosition.xyz * (0.97 - (1.0 - aScale) * smoothstep(-0.2, 0.2, sin(fTiming / 10.0)));
+		vec3 vPos = aVertexPosition.xyz * aScale;
+        gl_Position = uPMatrix * uMVMatrix * vec4(vPos + aOffset, 1.0);
+        vColor = aVertexColor;
+        vDist = aVertexPosition.w;
+    }
+</script>
+
+<script id="test-shader-fs" type="x-shader/x-fragment">
+  precision mediump float;
+
+  void main(void) {
+    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+  }
+</script>
+
+<script id="test-shader-vs" type="x-shader/x-vertex">
+  attribute vec3 aVertexPosition;
+
+  uniform mat4 uMVMatrix;
+  uniform mat4 uPMatrix;
+
+  void main(void) {
+    gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+  }
+</script>
+
+
+<script type="text/javascript">
+
+
+</script>
+</head>
+
+
+<body>
+	<div class="header">
+		<div class="inline left">
+			<div class="center">
+				<div class="inline menuItem layerValue">BIOME <span aria-hidden="true" class="icon-brush"></span></div>
+			</div>
+			<div class="inline menuItem">
+				#LOGO?#
+			</div>
+		</div>
+		<div class="inline right">
+			<div class="center">
+				<div class="inline menuItem layerValue"><span aria-hidden="true" class="icon-scale"></span> POPULATION</div>
+			</div>
+			<div class="inline menuItem">
+			OxDEADFA11 <span aria-hidden="true" class="icon-user"></span></div>
+		</div>
+		<div class="border"></div>
+	</div>
+	<canvas id="renderCanvas" width="1000" height="300"></canvas>
+	<div class="content">
+
+	</div>
+	<div class="display" id="colorDisplay1"></div>
+	<div class="control">
+		<input id="updateValue" type="number" value="1">
+		<button id="updateButton" type="button" onclick="updateField()">Update</button>
+	</div>
+	<div id="app"></div>
+	<script type="text/javascript" src="./bundle.js"></script>
+	<script type="text/javascript" src="./rtest.js"></script>
+</body>
+</html>
