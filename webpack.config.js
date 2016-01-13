@@ -32,7 +32,7 @@ module.exports = {
 			{
 				test: /\.css$/,
 				exclude: /node_modules/,
-				loader: 'style!css!postcss'
+				loader: extractTextPlugin.extract('style', 'css', 'postcss')
 			},
 			{
 				test: /\.(png|jpg|jpeg)$/,
@@ -60,7 +60,8 @@ module.exports = {
 			{
 				//ignore: "*/txt"
 			}
-		)
+		),
+		new extractTextPlugin("styles.css")
 	]
 };
 
