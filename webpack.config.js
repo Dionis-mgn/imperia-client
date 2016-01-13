@@ -1,5 +1,7 @@
 var webpack = require("webpack");
 var autoprefixer = require('autoprefixer');
+var copyPlugin = require('copy-webpack-plugin');
+var extractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
     entry: {
@@ -41,7 +43,25 @@ module.exports = {
 	},
 	postcss: function () {
 		return [autoprefixer];
-	}
+	},
+	plugins: [
+		new copyPlugin([
+				{
+					from: './fonts',
+					to : 'fonts'
+				},
+				{
+					from: './bg.png' // Webpack way? renamed version copied by webpack while processing CSS
+				},
+				{
+					from: './ural.html' // Webpack way?
+				}
+			],
+			{
+				//ignore: "*/txt"
+			}
+		)
+	]
 };
 
 ;
