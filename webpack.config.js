@@ -51,9 +51,6 @@ module.exports = {
 					to : 'fonts'
 				},
 				{
-					from: './bg.png' // Webpack way? renamed version copied by webpack while processing CSS
-				},
-				{
 					from: './ural.html' // Webpack way?
 				}
 			],

@@ -1,6 +1,6 @@
 class Pass {
 	constructor(_system, options) {
-		this.__objType = "Pass";
+		this.__objType = 'Pass';
 		this.system = _system;
 
 		this.program = options.program;
@@ -14,13 +14,24 @@ class Pass {
 		this.depthTest = typeof options.depthTest === 'undefined' ? true : options.depthTest;
 		this.depthWrite = typeof options.depthWrite === 'undefined' ? true : options.depthWrite;
 
-		var gl = _system.gl;
+		const gl = _system.gl;
 
 		if (typeof options.buffers !== 'undefined') {
-			var buffs = options.buffers;
-			for (var i in buffs) {
+			const buffs = options.buffers;
+			for (const i in buffs) {
+				if (!buffs.hasOwnProperty(i)) continue;
 
-				if (i === "noAttribute") {
+				if (i === 'noAttribute') {
+					buffs[i].forEach((element) => {
+						this.noAttributeBufs.push(element);
+						if (element.type === gl.ELEMENT_ARRAY_BUFFER) {
+							if (this.indiciesBuf !== null) {
+								throw new Error('Two indicies buffers in one pass');
+							}
+							this.indiciesBuf = element;
+						}
+					});
+					/*
 					for (var k in buffs[i]) {
 						var bufData = buffs[i][k];
 						this.noAttributeBufs.push(bufData);
@@ -31,16 +42,16 @@ class Pass {
 							this.indiciesBuf = bufData;
 						}
 					}
-				}
-				else {
-					var bufData = buffs[i].buf || buffs[i];
-					var instance = buffs[i].instance || 0;
+					*/
+				} else {
+					const bufData = buffs[i].buf || buffs[i];
+					const instance = buffs[i].instance || 0;
 
 					if (bufData.type !== gl.ARRAY_BUFFER) {
-						throw new Error("Incorrect buffer type");
+						throw new Error('Incorrect buffer type');
 					}
 
-					this.attributesData[i] = {buf : bufData, instance : instance};
+					this.attributesData[i] = { buf: bufData, instance };
 
 					if (instance) {
 						this.instanced = Math.max(bufData.length, this.instanced);
@@ -50,8 +61,8 @@ class Pass {
 		}
 
 		if (typeof options.programData !== 'undefined' && typeof options.programData.uniforms !== 'undefined') {
-			var uniforms = options.programData.uniforms;
-			for (i in uniforms) {
+			const uniforms = options.programData.uniforms;
+			for (const i in uniforms) {
 				this.uniformsData[i] = {};
 			}
 		}
@@ -101,7 +112,7 @@ class Pass {
 
 	setUniform(name, _obj, _field) {
 		if (typeof _obj === 'undefined') {
-			throw new Error("Incorrect parameters");
+			throw new Error('Incorrect parameters');
 		}
 
 		if (typeof this.uniformsData[name] === 'undefined') {
@@ -117,11 +128,11 @@ class Pass {
 		}
 
 		if (this.indiciesBuf === null) {
-			throw new Error("No indicies data");
+			throw new Error('No indicies data');
 		}
 
-		var gl = this.system.gl;
-		var instExt = this.system.instExt;
+		const gl = this.system.gl;
+		const instExt = this.system.instExt;
 
 		this.program.activate();
 		this.bindBuffers();
@@ -130,8 +141,7 @@ class Pass {
 
 		if (this.instanced) {
 			instExt.drawElementsInstancedANGLE(gl.TRIANGLES, this.indiciesBuf.length, gl.UNSIGNED_SHORT, 0, this.instanced);
-		}
-		else {
+		} else {
 			gl.drawElements(gl.TRIANGLES, this.indiciesBuf.length, gl.UNSIGNED_SHORT, 0);
 		}
 	}

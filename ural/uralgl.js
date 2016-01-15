@@ -1,34 +1,36 @@
-import Buffer from 'buffer.js'
-import Program from 'program.js'
-import Pass from 'pass.js'
+import Buffer from 'buffer.js';
+import Program from 'program.js';
+import Pass from 'pass.js';
 
-import {vec4, mat4} from 'gl-matrix'
+import { vec4, mat4 } from 'gl-matrix';
 
 class UralGL {
 
 	constructor(_canvas) {
-		var _gl = _canvas.getContext("webgl", {antialias:true}) || _canvas.getContext("experimantal-webgl", {antialias:true});
+		const _gl = _canvas.getContext('webgl', { antialias: true })
+			|| _canvas.getContext('experimantal-webgl', { antialias: true });
 
 		if (!_gl) {
-			throw new Error("Can not init WebGL");
+			throw new Error('Can not init WebGL');
 		}
 
-		var _instExt = _gl.getExtension("ANGLE_instanced_arrays") || _gl.getExtension("MOZ_ANGLE_instanced_arrays") || _gl.getExtension("WEBKIT_ANGLE_instanced_arrays");
+		const _instExt = _gl.getExtension('ANGLE_instanced_arrays')
+			|| _gl.getExtension('MOZ_ANGLE_instanced_arrays')
+			|| _gl.getExtension('WEBKIT_ANGLE_instanced_arrays');
 
 		if (!_instExt) {
-			throw new Error("Can not init 'instanced arrays' extension");
+			throw new Error('Can not init "instanced arrays" extension');
 		}
 
 
-		this.__objType = "UralGL instance";
+		this.__objType = 'UralGL instance';
 		this.gl = _gl;
 		this.instExt = _instExt;
 		this.canvas = _canvas;
 		this.state = {
-			bindedBuffer : null, // !
-			maxEnabledAttrib : -1
+			bindedBuffer: null, // !
+			maxEnabledAttrib: -1,
 		};
-
 	}
 
 	/**************************************************************************************************
@@ -41,12 +43,11 @@ class UralGL {
 	*   usage : gl usage (gl.STATIC_DRAW, gl.DYNAMIC_DRAW or gl.STREAM_DRAW)
 	*/
 	createBuffer(_options) {
-		var options = _options || {};
+		const options = _options || {};
 
-		var buf = new Buffer(this, options);
+		const buf = new Buffer(this, options);
 
-		if (typeof options.data !== 'undefined')
-		{
+		if (typeof options.data !== 'undefined') {
 			buf.set(options.data, options.itemSize);
 		}
 
@@ -60,14 +61,13 @@ class UralGL {
 		*   shaders (required) : array of shader's id's (in DOM)
 		*/
 	createProgram(_options) {
-
-		var options = _options || {};
+		const options = _options || {};
 
 		if (typeof options.shaders === 'undefined') {
-			throw new Error("Incorrect createProgram options");
+			throw new Error('Incorrect createProgram options');
 		}
 
-		var program = new Program(this, options);
+		const program = new Program(this, options);
 
 		return program;
 	}
@@ -85,18 +85,17 @@ class UralGL {
 		*   depthWrite : boolean
 		*/
 	createPass(_options) {
-		var gl = this.gl;
-		var options = _options || {};
+		const options = _options || {};
 
 		if (typeof options.program === 'undefined' && typeof options.programData === 'undefined') {
-			throw new Error("Incorrect createPass options");
+			throw new Error('Incorrect createPass options');
 		}
 
 		if (!options.program) {
-			options.program = this.createProgram({shaders : options.programData.shaders});
+			options.program = this.createProgram({ shaders: options.programData.shaders });
 		}
 
-		var pass = new Pass(this, options);
+		const pass = new Pass(this, options);
 
 		return pass;
 	}
@@ -106,23 +105,29 @@ class UralGL {
 		*************************************************************************************************/
 	createScene() {
 		return {
-			__objType : "Scene",
-			system : this,
+			__objType: 'Scene',
+			system: this,
 
-			passes : [],
+			passes: [],
 
-			addPass : function(order, pass) {
-				if (this.passes.indexOf(order) == -1) {
+			addPass(order, pass) {
+				if (this.passes.indexOf(order) === -1) {
 					this.passes[order] = [pass];
-				}
-				else {
+				} else {
 					this.passes[order].push(pass);
 				}
 			},
 
-			render : function() {
-				for (var i in this.passes) {
-					for (var j in this.passes[i]) {
+			render() {
+				for (const i in this.passes) {
+					if (!this.passes.hasOwnProperty(i)) {
+						continue;
+					}
+					for (const j in this.passes[i]) {
+						if (!this.passes[i].hasOwnProperty(j)) {
+							continue;
+						}
+
 						this.passes[i][j].render();
 					}
 				}

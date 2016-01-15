@@ -15,6 +15,9 @@
     "babel-preset-react": "^6.3.13",
     "copy-webpack-plugin": "^0.3.3",
     "css-loader": "^0.23.1",
+    "eslint": "^1.10.3",
+    "eslint-config-airbnb": "^3.1.0",
+    "eslint-plugin-react": "^3.15.0",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.8.5",
     "gl-matrix": "^2.3.1",
@@ -25,7 +28,11 @@
     "postcss-mixins": "^3.0.2",
     "postcss-nested": "^1.0.0",
     "react": "^0.14.6",
+    "react-dom": "^0.14.6",
     "style-loader": "^0.13.0",
     "webpack": "^1.12.11"
+  },
+  "dependencies": {
+    "raw-loader": "^0.5.1"
   }
 }

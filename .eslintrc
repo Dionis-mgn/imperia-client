@@ -1,0 +1,8 @@
+{
+    "extends": "airbnb",
+    "rules": {
+        "indent": [2, "tab"],
+        "max-len": [2, 140, 4, {"ignoreComments": true, "ignoreUrls": true}],
+        "comma-dangle": [2, "never"]
+    }
+}

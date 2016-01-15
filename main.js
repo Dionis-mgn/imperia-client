@@ -1,7 +1,7 @@
-import UralGL from 'ural/uralgl.js'
-import Engine from './imperia.js'
+import UralGL from 'ural/uralgl.js';
+import Engine from './imperia.js';
 
-import {vec4} from 'gl-matrix'
+import { vec4 } from 'gl-matrix';
 
 var uGL;
 var engine;
@@ -110,6 +110,8 @@ function start() {
 		canvas.addEventListener('mouseup', onMouseEnd);
 		canvas.addEventListener('mousedown', onMoveStart);
 	});
+
+	document.getElementById('updateButton').onclick = updateField;
 }
 
 function updateField() {

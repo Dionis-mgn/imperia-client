@@ -214,6 +214,9 @@ class Engine {
 
 		var index = (result.x + (this.field.size / 2)) * this.field.size + (result.y + (this.field.size / 2));
 
+		var index_x = Math.floor(index / this.field.size);
+		var index_y = index % this.field.size;
+
 		return {
 			index : index,
 			scale : this.buffers.scales.data[index],
@@ -221,7 +224,8 @@ class Engine {
 				this.buffers.colours.data[index * 4],
 				this.buffers.colours.data[index * 4 + 1],
 				this.buffers.colours.data[index * 4 + 2]
-			)
+			),
+			cell : this.field.cells[index_x][index_y]
 		}
 	}
 
@@ -231,7 +235,7 @@ class Engine {
 			data = {steps : count};
 		}
 
-		_this = this;
+		var _this = this;
 
 		$.ajax(
 			{
